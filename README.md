@@ -331,10 +331,13 @@ function registerVerification(..., bytes memory ecdsaSignature) external {
 - **Explorer**: https://explorer.oasis.io/testnet/sapphire
 - **Faucet**: https://faucet.testnet.oasis.io/
 
-### 合約地址 (範例)
+### 已部署的合約地址
 ```
 KYCRegistry: 0xe0e1EB1c77A0f280ADf74D09205f474d6bbbc3d2
 ROFL Oracle: 0x5D228D1964960512Ca9e7603E24aAEbc881C076A
+
+成功交易範例: 0x04653d4e36b5f59bc71329ada3ee102b8d52b2e5819377bc26a99590acf5000c
+區塊鏈瀏覽器: https://explorer.oasis.io/testnet/sapphire/address/0xe0e1EB1c77A0f280ADf74D09205f474d6bbbc3d2
 ```
 
 ---
