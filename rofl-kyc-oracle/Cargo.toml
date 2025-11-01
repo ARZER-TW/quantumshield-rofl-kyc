@@ -1,0 +1,37 @@
+[package]
+name = "rofl-kyc-oracle"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Post-Quantum Cryptography
+pqc_kyber = { version = "0.7", features = ["kyber1024"] }
+rand = "0.8"
+
+# Ethereum cryptography
+secp256k1 = { version = "0.27", features = ["rand", "recovery"] }
+
+# Ethereum library
+ethers = "2.0"
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Logging
+log = "0.4"
+env_logger = "0.10"
+
+# Cryptographic utilities
+sha2 = "0.10"
+sha3 = "0.10"
+hex = "0.4"
+aes-gcm = "0.10"
+
+# HTTP Server
+axum = "0.6"
+tower = "0.4"
+tower-http = { version = "0.4", features = ["cors"] }

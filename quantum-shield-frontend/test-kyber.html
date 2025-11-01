@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Kyber Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+    }
+    #output {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    p {
+      margin: 10px 0;
+      line-height: 1.6;
+    }
+    .error {
+      color: red;
+    }
+    .success {
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <h1>Kyber768 Browser Test</h1>
+  <div id="output">Loading kyber-crystals...</div>
+
+  <script>
+    const kyber = require('./node_modules/kyber-crystals')
+    const output = document.getElementById('output')
+
+    async function test() {
+      output.innerHTML = '<h2>Testing kyber-crystals...</h2>'
+
+      try {
+        // 1. 檢查可用方法
+        output.innerHTML += '<h3>Available methods:</h3>'
+        output.innerHTML += `<p>typeof kyber: ${typeof kyber}</p>`
+        output.innerHTML += `<p>Methods: ${Object.keys(kyber).join(', ')}</p>`
+
+        // 2. 生成密鑰對
+        output.innerHTML += '<h3>Generating keypair...</h3>'
+        const { publicKey, privateKey } = await kyber.keyPair()
+        output.innerHTML += `<p class="success">✅ Keypair generated</p>`
+        output.innerHTML += `<p>📊 Public key: ${publicKey.length} bytes</p>`
+        output.innerHTML += `<p>📊 Private key: ${privateKey.length} bytes</p>`
+
+        // 3. Encapsulate
+        output.innerHTML += '<h3>Testing encryption...</h3>'
+        const { cyphertext, secret } = await kyber.encrypt(publicKey)
+        output.innerHTML += `<p class="success">✅ Encryption successful</p>`
+        output.innerHTML += `<p>📊 Ciphertext: ${cyphertext.length} bytes</p>`
+        output.innerHTML += `<p>📊 Shared secret: ${secret.length} bytes</p>`
+
+        // 4. Decapsulate
+        output.innerHTML += '<h3>Testing decryption...</h3>'
+        const decrypted = await kyber.decrypt(cyphertext, privateKey)
+        output.innerHTML += `<p class="success">✅ Decryption successful</p>`
+        output.innerHTML += `<p>📊 Decrypted secret: ${decrypted.length} bytes</p>`
+
+        // 5. 驗證
+        const match = secret.every((val, i) => val === decrypted[i])
+        output.innerHTML += `<p class="success">✅ Secrets match: ${match}</p>`
+
+        // 6. 顯示格式
+        output.innerHTML += '<h3>Format Check:</h3>'
+        output.innerHTML += `<p>Public key type: ${publicKey.constructor.name}</p>`
+        output.innerHTML += `<p>First 32 bytes (hex): ${Array.from(publicKey.slice(0, 32)).map(b => b.toString(16).padStart(2, '0')).join('')}</p>`
+
+        // 7. 顯示常量（從實際測試推斷）
+        output.innerHTML += '<h3>📊 Kyber768 Constants:</h3>'
+        output.innerHTML += `<p>PUBLICKEYBYTES: ${publicKey.length}</p>`
+        output.innerHTML += `<p>SECRETKEYBYTES: ${privateKey.length}</p>`
+        output.innerHTML += `<p>CIPHERTEXTBYTES: ${cyphertext.length}</p>`
+        output.innerHTML += `<p>SHAREDSECRETBYTES: ${secret.length}</p>`
+
+        // 8. 與 Rust 版本比較
+        output.innerHTML += '<h3>Compatibility Check with Rust:</h3>'
+        const rustConstants = {
+          PUBLICKEYBYTES: 1184,
+          SECRETKEYBYTES: 2400,
+          CIPHERTEXTBYTES: 1088,
+          SHAREDSECRETBYTES: 32
+        }
+
+        const matches = {
+          publicKey: publicKey.length === rustConstants.PUBLICKEYBYTES,
+          secretKey: privateKey.length === rustConstants.SECRETKEYBYTES,
+          ciphertext: cyphertext.length === rustConstants.CIPHERTEXTBYTES,
+          sharedSecret: secret.length === rustConstants.SHAREDSECRETBYTES
+        }
+
+        Object.entries(matches).forEach(([key, isMatch]) => {
+          const status = isMatch ? '✅' : '❌'
+          const className = isMatch ? 'success' : 'error'
+          output.innerHTML += `<p class="${className}">${status} ${key}: ${isMatch ? 'MATCH' : 'MISMATCH'}</p>`
+        })
+
+        const allMatch = Object.values(matches).every(v => v)
+        if (allMatch) {
+          output.innerHTML += '<h2 class="success">🎉 All constants match! Frontend and Backend are compatible!</h2>'
+        } else {
+          output.innerHTML += '<h2 class="error">⚠️ Compatibility issue detected!</h2>'
+        }
+
+      } catch (e) {
+        output.innerHTML += `<p class="error">❌ Error: ${e.message}</p>`
+        output.innerHTML += `<p class="error">Stack: ${e.stack}</p>`
+        console.error(e)
+      }
+    }
+
+    test()
+  </script>
+</body>
+</html>
