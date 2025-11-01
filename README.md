@@ -406,7 +406,7 @@ MIT License
 
 ## 👥 團隊
 
-**QuantumShield 團隊** - RWA Hackathon 2024
+**QuantumShield 團隊** - RWA Hackathon 2025
 
 ---
 
